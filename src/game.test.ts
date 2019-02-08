@@ -4,12 +4,16 @@ type Cell = {
 };
 
 const nextTick = (cell: Cell) => ({
-  isAlive: !hasLessThanTwoLiveNeighbors(cell),
+  isAlive: !hasLessThanTwoLiveNeighbors(cell) && !hasMoreThanThreeLiveNeighbors(cell),
   neighbors: cell.neighbors,
 });
 
 const hasLessThanTwoLiveNeighbors = (cell: Cell) => (
   sumLiveNeighbors(cell) < 2
+);
+
+const hasMoreThanThreeLiveNeighbors = (cell: Cell) => (
+  sumLiveNeighbors(cell) > 3
 );
 
 const sumLiveNeighbors = (cell: Cell) => (
@@ -24,7 +28,7 @@ const Doubles = {
 };
 
 // Any live cell with fewer than two live neighbors dies, as if by underpopulation
-describe('Dies due to underpopulation', () => {
+describe('Underpopulation', () => {
   it('dies with no live neighbors', () => {
     const cellWithNoLiveNeighbors = Doubles.toLiveCell([]);
 
@@ -59,5 +63,31 @@ describe('Lives on to the next generation', () => {
     ]);
 
     expect(nextTick(cellWithOneLiveNeighbor).isAlive).toBeTruthy();
+  });
+});
+
+// Any live cell with more than three live neighbors dies, as if by overpopulation.
+describe('Overpopulation', () => {
+  it('dies with 4 live neighbors', () => {
+    const cellWithOneLiveNeighbor = Doubles.toLiveCell([
+      Doubles.toLiveCell(),
+      Doubles.toLiveCell(),
+      Doubles.toLiveCell(),
+      Doubles.toLiveCell(),
+    ]);
+
+    expect(nextTick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
+  });
+
+  it('dies with 5 live neighbors', () => {
+    const cellWithOneLiveNeighbor = Doubles.toLiveCell([
+      Doubles.toLiveCell(),
+      Doubles.toLiveCell(),
+      Doubles.toLiveCell(),
+      Doubles.toLiveCell(),
+      Doubles.toLiveCell(),
+    ]);
+
+    expect(nextTick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
   });
 });
