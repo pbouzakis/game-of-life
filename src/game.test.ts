@@ -1,10 +1,12 @@
 import range from './range';
 
-type Generation = boolean[][];
+type Cell = boolean;
 
-type Cell = {
+type Generation = Cell[][];
+
+type CellEnvironment = {
   isAlive: boolean;
-  neighbors: Cell[];
+  neighbors: CellEnvironment[];
 };
 
 type Neighbor = {
@@ -12,30 +14,30 @@ type Neighbor = {
   isAlive: boolean,
 };
 
-const tick = (cell: Cell) => ({
+const tick = (cell: CellEnvironment) => ({
   isAlive: willLiveOnToNextGeneration(cell),
   neighbors: cell.neighbors,
 });
 
-const willLiveOnToNextGeneration = (cell: Cell) => (
+const willLiveOnToNextGeneration = (cell: CellEnvironment) => (
   cell.isAlive
     ? !(hasLessThanTwoLiveNeighbors(cell) || hasMoreThanThreeLiveNeighbors(cell))
     : hasExactlyThreeLiveNeighbors(cell)
 );
 
-const hasLessThanTwoLiveNeighbors = (cell: Cell) => (
+const hasLessThanTwoLiveNeighbors = (cell: CellEnvironment) => (
   sumLiveNeighbors(cell) < 2
 );
 
-const hasMoreThanThreeLiveNeighbors = (cell: Cell) => (
+const hasMoreThanThreeLiveNeighbors = (cell: CellEnvironment) => (
   sumLiveNeighbors(cell) > 3
 );
 
-const hasExactlyThreeLiveNeighbors = (cell: Cell) => (
+const hasExactlyThreeLiveNeighbors = (cell: CellEnvironment) => (
   sumLiveNeighbors(cell) === 3
 );
 
-const sumLiveNeighbors = (cell: Cell) => (
+const sumLiveNeighbors = (cell: CellEnvironment) => (
   cell.neighbors.reduce((prev, current) => (
     current.isAlive ? prev + 1 : prev
   ), 0)
@@ -69,9 +71,9 @@ const getNeighbor = ([x, y]: Location, gen: Generation): Neighbor => ({
 });
 
 const Doubles: any = {
-  toLiveCell: (neighbors: Cell[] = []): Cell => ({ isAlive: true, neighbors }),
+  toLiveCell: (neighbors: CellEnvironment[] = []): CellEnvironment => ({ isAlive: true, neighbors }),
 
-  toDeadCell: (neighbors: Cell[] = []): Cell => ({ isAlive: false, neighbors }),
+  toDeadCell: (neighbors: CellEnvironment[] = []): CellEnvironment => ({ isAlive: false, neighbors }),
 
   toDeadGeneration: (size: number) => range(size).map(() => range(size).map(() => false)),
 
