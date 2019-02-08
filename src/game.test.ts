@@ -3,7 +3,7 @@ type Cell = {
   neighbors: Cell[];
 };
 
-const nextTick = (cell: Cell) => ({
+const tick = (cell: Cell) => ({
   isAlive: willLiveOnToNextGeneration(cell),
   neighbors: cell.neighbors,
 });
@@ -42,7 +42,7 @@ describe('Underpopulation: A live cell', () => {
   it('dies with no live neighbors', () => {
     const cellWithNoLiveNeighbors = Doubles.toLiveCell([]);
 
-    expect(nextTick(cellWithNoLiveNeighbors).isAlive).toBeFalsy();
+    expect(tick(cellWithNoLiveNeighbors).isAlive).toBeFalsy();
   });
 
   it('dies with 1 live neighbors', () => {
@@ -50,7 +50,7 @@ describe('Underpopulation: A live cell', () => {
       Doubles.toLiveCell(),
     ]);
 
-    expect(nextTick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
+    expect(tick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
   });
 });
 
@@ -62,7 +62,7 @@ describe('Lives on to the next generation: A live cell', () => {
       Doubles.toLiveCell(),
     ]);
 
-    expect(nextTick(cellWithOneLiveNeighbor).isAlive).toBeTruthy();
+    expect(tick(cellWithOneLiveNeighbor).isAlive).toBeTruthy();
   });
 
   it('lives with 3 live neighbors', () => {
@@ -72,7 +72,7 @@ describe('Lives on to the next generation: A live cell', () => {
       Doubles.toLiveCell(),
     ]);
 
-    expect(nextTick(cellWithOneLiveNeighbor).isAlive).toBeTruthy();
+    expect(tick(cellWithOneLiveNeighbor).isAlive).toBeTruthy();
   });
 });
 
@@ -86,7 +86,7 @@ describe('Overpopulation: A live cell', () => {
       Doubles.toLiveCell(),
     ]);
 
-    expect(nextTick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
+    expect(tick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
   });
 
   it('dies with 5 live neighbors', () => {
@@ -98,7 +98,7 @@ describe('Overpopulation: A live cell', () => {
       Doubles.toLiveCell(),
     ]);
 
-    expect(nextTick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
+    expect(tick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
   });
 });
 
@@ -111,7 +111,7 @@ describe('Reproduction: A dead cell', () => {
       Doubles.toLiveCell(),
     ]);
 
-    expect(nextTick(cellWithOneLiveNeighbor).isAlive).toBeTruthy();
+    expect(tick(cellWithOneLiveNeighbor).isAlive).toBeTruthy();
   });
 
   // Otherwise it dies with any other neighbor configuration.
@@ -122,7 +122,7 @@ describe('Reproduction: A dead cell', () => {
         Doubles.toLiveCell(),
       ]);
 
-      expect(nextTick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
+      expect(tick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
     });
 
     it('with 4 live neighbors', () => {
@@ -133,13 +133,13 @@ describe('Reproduction: A dead cell', () => {
         Doubles.toLiveCell(),
       ]);
 
-      expect(nextTick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
+      expect(tick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
     });
 
     it('with no live neighbors', () => {
       const cellWithOneLiveNeighbor = Doubles.toDeadCell([]);
 
-      expect(nextTick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
+      expect(tick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
     });
   });
 });
