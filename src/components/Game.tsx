@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import Board from './Board';
-import {toInput} from './input';
+import {toInput} from '../input';
 
 const TICK_DELAY = 1000;
 

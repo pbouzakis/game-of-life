@@ -5,10 +5,10 @@ const size = 50;
 
 const Board: React.SFC<{ bitmap: BitMap }> = ({ bitmap }) => (
   <div className="Board">
-    {bitmap.map(row => (
-      <Row>
-        {row.map(bit => (
-          <Cell bit={bit} />
+    {bitmap.map((row, i) => (
+      <Row key={i}>
+        {row.map((bit, j) => (
+          <Cell key={j} bit={bit} />
         ))}
       </Row>
     ))}
