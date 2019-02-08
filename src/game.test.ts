@@ -38,9 +38,22 @@ describe('Dies due to underpopulation', () => {
 
     expect(nextTick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
   });
+});
 
+// Any live cell with two or three live neighbors lives on to the next generation.
+describe('Lives on to the next generation', () => {
   it('lives with 2 live neighbors', () => {
     const cellWithOneLiveNeighbor = Doubles.toLiveCell([
+      Doubles.toLiveCell(),
+      Doubles.toLiveCell(),
+    ]);
+
+    expect(nextTick(cellWithOneLiveNeighbor).isAlive).toBeTruthy();
+  });
+
+  it('lives with 3 live neighbors', () => {
+    const cellWithOneLiveNeighbor = Doubles.toLiveCell([
+      Doubles.toLiveCell(),
       Doubles.toLiveCell(),
       Doubles.toLiveCell(),
     ]);
