@@ -10,7 +10,7 @@ const nextTick = (cell: Cell) => ({
 
 const willLiveOnToNextGeneration = (cell: Cell) => (
   cell.isAlive
-    ? (!hasLessThanTwoLiveNeighbors(cell) && !hasMoreThanThreeLiveNeighbors(cell))
+    ? !(hasLessThanTwoLiveNeighbors(cell) || hasMoreThanThreeLiveNeighbors(cell))
     : hasExactlyThreeLiveNeighbors(cell)
 );
 
