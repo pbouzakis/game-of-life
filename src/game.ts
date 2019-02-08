@@ -23,21 +23,15 @@ const willLiveOnToNextGeneration = (cell: CellEnvironment) => (
 );
 
 const hasLessThanTwoLiveNeighbors = (cell: CellEnvironment) => (
-  sumLiveNeighbors(cell) < 2
+  cell.liveNeighbors.length < 2
 );
 
 const hasMoreThanThreeLiveNeighbors = (cell: CellEnvironment) => (
-  sumLiveNeighbors(cell) > 3
+  cell.liveNeighbors.length > 3
 );
 
 const hasExactlyThreeLiveNeighbors = (cell: CellEnvironment) => (
-  sumLiveNeighbors(cell) === 3
-);
-
-const sumLiveNeighbors = (cell: CellEnvironment) => (
-  cell.liveNeighbors.reduce((prev, current) => (
-    current.isAlive ? prev + 1 : prev
-  ), 0)
+  cell.liveNeighbors.length === 3
 );
 
 const getLiveNeighborsFrom = ([x, y]: CellLocation, gen: Generation) => {
