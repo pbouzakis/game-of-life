@@ -1,8 +1,6 @@
-const size = 50;
+import range from './range';
 
-const range = (size: number) => (
-  Array.from(Array(size).keys())
-);
+const size = 50;
 
 const toInput = () => (
   range(size)
