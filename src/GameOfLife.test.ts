@@ -1,10 +1,10 @@
 import Doubles from './Doubles';
-import {
+import GameOfLife, {
   Generation,
   toCellLocation,
   transition,
   getLiveNeighborsFrom,
-} from './game';
+} from './GameOfLife';
 
 describe('On each next tick', () => {
 // Any live cell with fewer than two live liveNeighbors dies, as if by underpopulation
@@ -152,4 +152,36 @@ describe('Within generation', () => {
       ]);
     });
   });
+});
+
+describe('Game of Life', () => {
+  let seed: Generation;
+  const SIZE = 3;
+
+  beforeEach(() => {
+    const game = GameOfLife.create(SIZE);
+    seed = game.seed();
+  });
+
+  it('creates seed generation with correct size', () => {
+    expect(seed.length).toBe(SIZE);
+    expect(seed[0].length).toBe(SIZE);
+    expect(seed[1].length).toBe(SIZE);
+    expect(seed[2].length).toBe(SIZE);
+  });
+
+  it('creates seed generation with correct shape', () => {
+    expect(seed[0][0]).toHaveProperty('isAlive');
+    expect(seed[0][1]).toHaveProperty('isAlive');
+    expect(seed[0][2]).toHaveProperty('isAlive');
+
+    expect(seed[1][0]).toHaveProperty('isAlive');
+    expect(seed[1][1]).toHaveProperty('isAlive');
+    expect(seed[1][2]).toHaveProperty('isAlive');
+
+    expect(seed[2][0]).toHaveProperty('isAlive');
+    expect(seed[2][1]).toHaveProperty('isAlive');
+    expect(seed[2][2]).toHaveProperty('isAlive');
+  });
+
 });

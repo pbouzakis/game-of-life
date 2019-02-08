@@ -4,7 +4,7 @@ import {
   CellLocation,
   Generation,
   Neighbor,
-} from './game';
+} from './GameOfLife';
 
 const Doubles: any = {
   toLiveCell: (liveNeighbors: Neighbor[] = []): CellEnvironment => ({

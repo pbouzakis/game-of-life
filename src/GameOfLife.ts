@@ -1,3 +1,5 @@
+import range from './range';
+
 export type Generation = Cell[][];
 
 export type Cell = { isAlive: boolean };
@@ -13,6 +15,17 @@ export type Neighbor =
 export type CellLocation = [number, number]; // [x, y]
 
 const toCellLocation = (x: number, y: number) => [x, y];
+
+const toGameOfLife = (size: number) => ({
+  seed: () => seed(size),
+});
+
+const seed = (size: number): Generation => (
+  range(size)
+    .map(() => range(size).map(() => ({ isAlive: randomBoolean() })))
+);
+
+const randomBoolean = () => Boolean(Math.round(Math.random()));
 
 const transition = (cell: CellEnvironment): Cell => ({
   isAlive: willLiveOnToNextGeneration(cell),
@@ -65,4 +78,8 @@ export {
   getLiveNeighborsFrom,
   toCellLocation,
   transition,
+};
+
+export default {
+  create: toGameOfLife,
 };
