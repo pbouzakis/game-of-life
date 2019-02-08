@@ -4,9 +4,15 @@ type Cell = {
 };
 
 const nextTick = (cell: Cell) => ({
-  isAlive: !hasLessThanTwoLiveNeighbors(cell) && !hasMoreThanThreeLiveNeighbors(cell),
+  isAlive: willLiveOnToNextGeneration(cell),
   neighbors: cell.neighbors,
 });
+
+const willLiveOnToNextGeneration = (cell: Cell) => (
+  cell.isAlive
+    ? (!hasLessThanTwoLiveNeighbors(cell) && !hasMoreThanThreeLiveNeighbors(cell))
+    : hasExactlyThreeLiveNeighbors(cell)
+);
 
 const hasLessThanTwoLiveNeighbors = (cell: Cell) => (
   sumLiveNeighbors(cell) < 2
@@ -14,6 +20,10 @@ const hasLessThanTwoLiveNeighbors = (cell: Cell) => (
 
 const hasMoreThanThreeLiveNeighbors = (cell: Cell) => (
   sumLiveNeighbors(cell) > 3
+);
+
+const hasExactlyThreeLiveNeighbors = (cell: Cell) => (
+  sumLiveNeighbors(cell) === 3
 );
 
 const sumLiveNeighbors = (cell: Cell) => (
@@ -28,7 +38,7 @@ const Doubles = {
 };
 
 // Any live cell with fewer than two live neighbors dies, as if by underpopulation
-describe('Underpopulation', () => {
+describe('Underpopulation: A live cell', () => {
   it('dies with no live neighbors', () => {
     const cellWithNoLiveNeighbors = Doubles.toLiveCell([]);
 
@@ -45,7 +55,7 @@ describe('Underpopulation', () => {
 });
 
 // Any live cell with two or three live neighbors lives on to the next generation.
-describe('Lives on to the next generation', () => {
+describe('Lives on to the next generation: A live cell', () => {
   it('lives with 2 live neighbors', () => {
     const cellWithOneLiveNeighbor = Doubles.toLiveCell([
       Doubles.toLiveCell(),
@@ -67,7 +77,7 @@ describe('Lives on to the next generation', () => {
 });
 
 // Any live cell with more than three live neighbors dies, as if by overpopulation.
-describe('Overpopulation', () => {
+describe('Overpopulation: A live cell', () => {
   it('dies with 4 live neighbors', () => {
     const cellWithOneLiveNeighbor = Doubles.toLiveCell([
       Doubles.toLiveCell(),
@@ -89,5 +99,47 @@ describe('Overpopulation', () => {
     ]);
 
     expect(nextTick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
+  });
+});
+
+// Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
+describe('Reproduction: A dead cell', () => {
+  it('lives with 3 live neighbors', () => {
+    const cellWithOneLiveNeighbor = Doubles.toDeadCell([
+      Doubles.toLiveCell(),
+      Doubles.toLiveCell(),
+      Doubles.toLiveCell(),
+    ]);
+
+    expect(nextTick(cellWithOneLiveNeighbor).isAlive).toBeTruthy();
+  });
+
+  // Otherwise it dies with any other neighbor configuration.
+  describe('stays dead', () => {
+    it('with 2 live neighbors', () => {
+      const cellWithOneLiveNeighbor = Doubles.toDeadCell([
+        Doubles.toLiveCell(),
+        Doubles.toLiveCell(),
+      ]);
+
+      expect(nextTick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
+    });
+
+    it('with 4 live neighbors', () => {
+      const cellWithOneLiveNeighbor = Doubles.toDeadCell([
+        Doubles.toLiveCell(),
+        Doubles.toLiveCell(),
+        Doubles.toLiveCell(),
+        Doubles.toLiveCell(),
+      ]);
+
+      expect(nextTick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
+    });
+
+    it('with no live neighbors', () => {
+      const cellWithOneLiveNeighbor = Doubles.toDeadCell([]);
+
+      expect(nextTick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
+    });
   });
 });
