@@ -6,7 +6,7 @@ type Generation = Cell[][];
 
 type CellEnvironment = {
   isAlive: boolean;
-  liveNeighbors: CellEnvironment[];
+  liveNeighbors: Neighbor[];
 };
 
 type Neighbor = {
@@ -71,14 +71,19 @@ const getNeighbor = ([x, y]: Location, gen: Generation): Neighbor => ({
 });
 
 const Doubles: any = {
-  toLiveCell: (liveNeighbors: CellEnvironment[] = []): CellEnvironment => ({
+  toLiveCell: (liveNeighbors: Neighbor[] = []): CellEnvironment => ({
     isAlive: true,
     liveNeighbors,
   }),
 
-  toDeadCell: (liveNeighbors: CellEnvironment[] = []): CellEnvironment => ({
+  toDeadCell: (liveNeighbors: Neighbor[] = []): CellEnvironment => ({
     isAlive: false,
     liveNeighbors,
+  }),
+
+  toLiveNeighbor: (location: Location = [0, 0]) => ({
+    isAlive: true,
+    location,
   }),
 
   toDeadGeneration: (size: number) => range(size).map(() => range(size).map(() => false)),
@@ -104,7 +109,7 @@ describe('On each next tick', () => {
 
     it('dies with 1 live liveNeighbors', () => {
       const cellWithOneLiveNeighbor = Doubles.toLiveCell([
-        Doubles.toLiveCell(),
+        Doubles.toLiveNeighbor(),
       ]);
 
       expect(tick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
@@ -115,8 +120,8 @@ describe('On each next tick', () => {
   describe('A live cell lives on to the next generation', () => {
     it('lives with 2 live liveNeighbors', () => {
       const cellWithOneLiveNeighbor = Doubles.toLiveCell([
-        Doubles.toLiveCell(),
-        Doubles.toLiveCell(),
+        Doubles.toLiveNeighbor(),
+        Doubles.toLiveNeighbor(),
       ]);
 
       expect(tick(cellWithOneLiveNeighbor).isAlive).toBeTruthy();
@@ -124,9 +129,9 @@ describe('On each next tick', () => {
 
     it('lives with 3 live liveNeighbors', () => {
       const cellWithOneLiveNeighbor = Doubles.toLiveCell([
-        Doubles.toLiveCell(),
-        Doubles.toLiveCell(),
-        Doubles.toLiveCell(),
+        Doubles.toLiveNeighbor(),
+        Doubles.toLiveNeighbor(),
+        Doubles.toLiveNeighbor(),
       ]);
 
       expect(tick(cellWithOneLiveNeighbor).isAlive).toBeTruthy();
@@ -137,10 +142,10 @@ describe('On each next tick', () => {
   describe('A live cell with overpopulation', () => {
     it('dies with 4 live liveNeighbors', () => {
       const cellWithOneLiveNeighbor = Doubles.toLiveCell([
-        Doubles.toLiveCell(),
-        Doubles.toLiveCell(),
-        Doubles.toLiveCell(),
-        Doubles.toLiveCell(),
+        Doubles.toLiveNeighbor(),
+        Doubles.toLiveNeighbor(),
+        Doubles.toLiveNeighbor(),
+        Doubles.toLiveNeighbor(),
       ]);
 
       expect(tick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
@@ -148,11 +153,11 @@ describe('On each next tick', () => {
 
     it('dies with 5 live liveNeighbors', () => {
       const cellWithOneLiveNeighbor = Doubles.toLiveCell([
-        Doubles.toLiveCell(),
-        Doubles.toLiveCell(),
-        Doubles.toLiveCell(),
-        Doubles.toLiveCell(),
-        Doubles.toLiveCell(),
+        Doubles.toLiveNeighbor(),
+        Doubles.toLiveNeighbor(),
+        Doubles.toLiveNeighbor(),
+        Doubles.toLiveNeighbor(),
+        Doubles.toLiveNeighbor(),
       ]);
 
       expect(tick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
@@ -163,9 +168,9 @@ describe('On each next tick', () => {
   describe('A dead cell for reproduction', () => {
     it('lives with exactly 3 live liveNeighbors', () => {
       const cellWithOneLiveNeighbor = Doubles.toDeadCell([
-        Doubles.toLiveCell(),
-        Doubles.toLiveCell(),
-        Doubles.toLiveCell(),
+        Doubles.toLiveNeighbor(),
+        Doubles.toLiveNeighbor(),
+        Doubles.toLiveNeighbor(),
       ]);
 
       expect(tick(cellWithOneLiveNeighbor).isAlive).toBeTruthy();
@@ -175,8 +180,8 @@ describe('On each next tick', () => {
     describe('stays dead', () => {
       it('with 2 live liveNeighbors', () => {
         const cellWithOneLiveNeighbor = Doubles.toDeadCell([
-          Doubles.toLiveCell(),
-          Doubles.toLiveCell(),
+          Doubles.toLiveNeighbor(),
+          Doubles.toLiveNeighbor(),
         ]);
 
         expect(tick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
@@ -184,10 +189,10 @@ describe('On each next tick', () => {
 
       it('with 4 live liveNeighbors', () => {
         const cellWithOneLiveNeighbor = Doubles.toDeadCell([
-          Doubles.toLiveCell(),
-          Doubles.toLiveCell(),
-          Doubles.toLiveCell(),
-          Doubles.toLiveCell(),
+          Doubles.toLiveNeighbor(),
+          Doubles.toLiveNeighbor(),
+          Doubles.toLiveNeighbor(),
+          Doubles.toLiveNeighbor(),
         ]);
 
         expect(tick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
