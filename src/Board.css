@@ -1,0 +1,16 @@
+.Board {;
+}
+
+.Board-row {
+  display: flex;
+}
+
+.Board-cell {
+  border: 1px #666 solid;
+  height: 10px;
+  width: 10px;
+}
+
+.Board-cell--filled {
+  background-color: black;
+}
