@@ -6,7 +6,7 @@ type Generation = Cell[][];
 
 type CellEnvironment = {
   isAlive: boolean;
-  neighbors: CellEnvironment[];
+  liveNeighbors: CellEnvironment[];
 };
 
 type Neighbor = {
@@ -16,7 +16,7 @@ type Neighbor = {
 
 const tick = (cell: CellEnvironment) => ({
   isAlive: willLiveOnToNextGeneration(cell),
-  neighbors: cell.neighbors,
+  neighbors: cell.liveNeighbors,
 });
 
 const willLiveOnToNextGeneration = (cell: CellEnvironment) => (
@@ -38,7 +38,7 @@ const hasExactlyThreeLiveNeighbors = (cell: CellEnvironment) => (
 );
 
 const sumLiveNeighbors = (cell: CellEnvironment) => (
-  cell.neighbors.reduce((prev, current) => (
+  cell.liveNeighbors.reduce((prev, current) => (
     current.isAlive ? prev + 1 : prev
   ), 0)
 );
@@ -71,9 +71,15 @@ const getNeighbor = ([x, y]: Location, gen: Generation): Neighbor => ({
 });
 
 const Doubles: any = {
-  toLiveCell: (neighbors: CellEnvironment[] = []): CellEnvironment => ({ isAlive: true, neighbors }),
+  toLiveCell: (liveNeighbors: CellEnvironment[] = []): CellEnvironment => ({
+    isAlive: true,
+    liveNeighbors,
+  }),
 
-  toDeadCell: (neighbors: CellEnvironment[] = []): CellEnvironment => ({ isAlive: false, neighbors }),
+  toDeadCell: (liveNeighbors: CellEnvironment[] = []): CellEnvironment => ({
+    isAlive: false,
+    liveNeighbors,
+  }),
 
   toDeadGeneration: (size: number) => range(size).map(() => range(size).map(() => false)),
 
@@ -88,15 +94,15 @@ const Doubles: any = {
 };
 
 describe('On each next tick', () => {
-// Any live cell with fewer than two live neighbors dies, as if by underpopulation
+// Any live cell with fewer than two live liveNeighbors dies, as if by underpopulation
   describe('A live cell with underpopulation: ', () => {
-    it('dies with no live neighbors', () => {
+    it('dies with no live liveNeighbors', () => {
       const cellWithNoLiveNeighbors = Doubles.toLiveCell([]);
 
       expect(tick(cellWithNoLiveNeighbors).isAlive).toBeFalsy();
     });
 
-    it('dies with 1 live neighbors', () => {
+    it('dies with 1 live liveNeighbors', () => {
       const cellWithOneLiveNeighbor = Doubles.toLiveCell([
         Doubles.toLiveCell(),
       ]);
@@ -105,9 +111,9 @@ describe('On each next tick', () => {
     });
   });
 
-// Any live cell with two or three live neighbors lives on to the next generation.
+// Any live cell with two or three live liveNeighbors lives on to the next generation.
   describe('A live cell lives on to the next generation', () => {
-    it('lives with 2 live neighbors', () => {
+    it('lives with 2 live liveNeighbors', () => {
       const cellWithOneLiveNeighbor = Doubles.toLiveCell([
         Doubles.toLiveCell(),
         Doubles.toLiveCell(),
@@ -116,7 +122,7 @@ describe('On each next tick', () => {
       expect(tick(cellWithOneLiveNeighbor).isAlive).toBeTruthy();
     });
 
-    it('lives with 3 live neighbors', () => {
+    it('lives with 3 live liveNeighbors', () => {
       const cellWithOneLiveNeighbor = Doubles.toLiveCell([
         Doubles.toLiveCell(),
         Doubles.toLiveCell(),
@@ -127,9 +133,9 @@ describe('On each next tick', () => {
     });
   });
 
-// Any live cell with more than three live neighbors dies, as if by overpopulation.
+// Any live cell with more than three live liveNeighbors dies, as if by overpopulation.
   describe('A live cell with overpopulation', () => {
-    it('dies with 4 live neighbors', () => {
+    it('dies with 4 live liveNeighbors', () => {
       const cellWithOneLiveNeighbor = Doubles.toLiveCell([
         Doubles.toLiveCell(),
         Doubles.toLiveCell(),
@@ -140,7 +146,7 @@ describe('On each next tick', () => {
       expect(tick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
     });
 
-    it('dies with 5 live neighbors', () => {
+    it('dies with 5 live liveNeighbors', () => {
       const cellWithOneLiveNeighbor = Doubles.toLiveCell([
         Doubles.toLiveCell(),
         Doubles.toLiveCell(),
@@ -153,9 +159,9 @@ describe('On each next tick', () => {
     });
   });
 
-// Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
+// Any dead cell with exactly three live liveNeighbors becomes a live cell, as if by reproduction.
   describe('A dead cell for reproduction', () => {
-    it('lives with exactly 3 live neighbors', () => {
+    it('lives with exactly 3 live liveNeighbors', () => {
       const cellWithOneLiveNeighbor = Doubles.toDeadCell([
         Doubles.toLiveCell(),
         Doubles.toLiveCell(),
@@ -167,7 +173,7 @@ describe('On each next tick', () => {
 
     // Otherwise it dies with any other neighbor configuration.
     describe('stays dead', () => {
-      it('with 2 live neighbors', () => {
+      it('with 2 live liveNeighbors', () => {
         const cellWithOneLiveNeighbor = Doubles.toDeadCell([
           Doubles.toLiveCell(),
           Doubles.toLiveCell(),
@@ -176,7 +182,7 @@ describe('On each next tick', () => {
         expect(tick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
       });
 
-      it('with 4 live neighbors', () => {
+      it('with 4 live liveNeighbors', () => {
         const cellWithOneLiveNeighbor = Doubles.toDeadCell([
           Doubles.toLiveCell(),
           Doubles.toLiveCell(),
@@ -187,7 +193,7 @@ describe('On each next tick', () => {
         expect(tick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
       });
 
-      it('with no live neighbors', () => {
+      it('with no live liveNeighbors', () => {
         const cellWithOneLiveNeighbor = Doubles.toDeadCell([]);
 
         expect(tick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
@@ -210,7 +216,7 @@ describe('Within generation', () => {
         .build();
     });
 
-    it('finds all live neighbors from center', () => {
+    it('finds all live liveNeighbors from center', () => {
       const centerCell: Location = [1, 1];
       const neighbors = getLiveNeighborsFrom(centerCell, gen);
 
@@ -223,7 +229,7 @@ describe('Within generation', () => {
       ]);
     });
 
-    it('finds all live neighbors from top left', () => {
+    it('finds all live liveNeighbors from top left', () => {
       const topLeft: Location = [0, 0];
       const neighbors = getLiveNeighborsFrom(topLeft, gen);
 
