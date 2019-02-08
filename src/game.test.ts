@@ -1,22 +1,21 @@
 import range from './range';
 
-type Cell = boolean;
-
 type Generation = Cell[][];
 
-type CellEnvironment = {
-  isAlive: boolean;
-  liveNeighbors: Neighbor[];
-};
+type Cell = { isAlive: boolean };
 
-type Neighbor = {
-  location: Location,
-  isAlive: boolean,
-};
+type CellEnvironment =
+  & Cell
+  & { liveNeighbors: Neighbor[] };
 
-const tick = (cell: CellEnvironment) => ({
+type Neighbor =
+  & Cell
+  & { location: CellLocation };
+
+type CellLocation = [number, number]; // [x, y]
+
+const transition = (cell: CellEnvironment): Cell => ({
   isAlive: willLiveOnToNextGeneration(cell),
-  neighbors: cell.liveNeighbors,
 });
 
 const willLiveOnToNextGeneration = (cell: CellEnvironment) => (
@@ -43,9 +42,7 @@ const sumLiveNeighbors = (cell: CellEnvironment) => (
   ), 0)
 );
 
-type Location = [number, number];
-
-const getLiveNeighborsFrom = ([x, y]: Location, gen: Generation) => {
+const getLiveNeighborsFrom = ([x, y]: CellLocation, gen: Generation) => {
   const top = x - 1;
   const bottom = x + 1;
   const left = y - 1;
@@ -65,7 +62,7 @@ const getLiveNeighborsFrom = ([x, y]: Location, gen: Generation) => {
   return neighbors.filter(neighbor => neighbor.isAlive);
 };
 
-const getNeighbor = ([x, y]: Location, gen: Generation): Neighbor => ({
+const getNeighbor = ([x, y]: CellLocation, gen: Generation): Neighbor => ({
   location: [x, y],
   isAlive: Boolean(gen[x] && gen[x][y]),
 });
@@ -81,7 +78,7 @@ const Doubles: any = {
     liveNeighbors,
   }),
 
-  toLiveNeighbor: (location: Location = [0, 0]) => ({
+  toLiveNeighbor: (location: CellLocation = [0, 0]) => ({
     isAlive: true,
     location,
   }),
@@ -104,7 +101,7 @@ describe('On each next tick', () => {
     it('dies with no live liveNeighbors', () => {
       const cellWithNoLiveNeighbors = Doubles.toLiveCell([]);
 
-      expect(tick(cellWithNoLiveNeighbors).isAlive).toBeFalsy();
+      expect(transition(cellWithNoLiveNeighbors).isAlive).toBeFalsy();
     });
 
     it('dies with 1 live liveNeighbors', () => {
@@ -112,7 +109,7 @@ describe('On each next tick', () => {
         Doubles.toLiveNeighbor(),
       ]);
 
-      expect(tick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
+      expect(transition(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
     });
   });
 
@@ -124,7 +121,7 @@ describe('On each next tick', () => {
         Doubles.toLiveNeighbor(),
       ]);
 
-      expect(tick(cellWithOneLiveNeighbor).isAlive).toBeTruthy();
+      expect(transition(cellWithOneLiveNeighbor).isAlive).toBeTruthy();
     });
 
     it('lives with 3 live liveNeighbors', () => {
@@ -134,7 +131,7 @@ describe('On each next tick', () => {
         Doubles.toLiveNeighbor(),
       ]);
 
-      expect(tick(cellWithOneLiveNeighbor).isAlive).toBeTruthy();
+      expect(transition(cellWithOneLiveNeighbor).isAlive).toBeTruthy();
     });
   });
 
@@ -148,7 +145,7 @@ describe('On each next tick', () => {
         Doubles.toLiveNeighbor(),
       ]);
 
-      expect(tick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
+      expect(transition(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
     });
 
     it('dies with 5 live liveNeighbors', () => {
@@ -160,7 +157,7 @@ describe('On each next tick', () => {
         Doubles.toLiveNeighbor(),
       ]);
 
-      expect(tick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
+      expect(transition(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
     });
   });
 
@@ -173,7 +170,7 @@ describe('On each next tick', () => {
         Doubles.toLiveNeighbor(),
       ]);
 
-      expect(tick(cellWithOneLiveNeighbor).isAlive).toBeTruthy();
+      expect(transition(cellWithOneLiveNeighbor).isAlive).toBeTruthy();
     });
 
     // Otherwise it dies with any other neighbor configuration.
@@ -184,7 +181,7 @@ describe('On each next tick', () => {
           Doubles.toLiveNeighbor(),
         ]);
 
-        expect(tick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
+        expect(transition(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
       });
 
       it('with 4 live liveNeighbors', () => {
@@ -195,13 +192,13 @@ describe('On each next tick', () => {
           Doubles.toLiveNeighbor(),
         ]);
 
-        expect(tick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
+        expect(transition(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
       });
 
       it('with no live liveNeighbors', () => {
         const cellWithOneLiveNeighbor = Doubles.toDeadCell([]);
 
-        expect(tick(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
+        expect(transition(cellWithOneLiveNeighbor).isAlive).toBeFalsy();
       });
     });
   });
@@ -222,7 +219,7 @@ describe('Within generation', () => {
     });
 
     it('finds all live liveNeighbors from center', () => {
-      const centerCell: Location = [1, 1];
+      const centerCell: CellLocation = [1, 1];
       const neighbors = getLiveNeighborsFrom(centerCell, gen);
 
       expect(neighbors.map(neighbor => neighbor.location)).toEqual([
@@ -235,7 +232,7 @@ describe('Within generation', () => {
     });
 
     it('finds all live liveNeighbors from top left', () => {
-      const topLeft: Location = [0, 0];
+      const topLeft: CellLocation = [0, 0];
       const neighbors = getLiveNeighborsFrom(topLeft, gen);
 
       expect(neighbors.map(neighbor => neighbor.location)).toEqual([
