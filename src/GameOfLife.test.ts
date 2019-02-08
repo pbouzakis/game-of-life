@@ -155,12 +155,13 @@ describe('Within generation', () => {
 });
 
 describe('Game of Life', () => {
+  const SIZE = 3;
+  const game = GameOfLife.create(SIZE);
+
   describe('When creating the seed generation', () => {
     let seed: Generation;
-    const SIZE = 3;
 
     beforeEach(() => {
-      const game = GameOfLife.create(SIZE);
       seed = game.seed();
     });
 
@@ -183,6 +184,39 @@ describe('Game of Life', () => {
       expect(seed[2][0]).toHaveProperty('isAlive');
       expect(seed[2][1]).toHaveProperty('isAlive');
       expect(seed[2][2]).toHaveProperty('isAlive');
+    });
+  });
+
+  describe('On the next tick', () => {
+    const deadGen = Doubles.generationBuilder(SIZE).build();
+
+    it('has no effect on an all dead generation', () => {
+      expect(game.tick(deadGen)).toEqual(deadGen);
+    });
+
+    it('kills off lonely cell to a dead generation', () => {
+      const currentGen = Doubles.generationBuilder(SIZE)
+        .addLiveCell(0, 0)
+        .build();
+
+      expect(game.tick(currentGen)).toStrictEqual(deadGen);
+    });
+
+    it('grows the generation with center cell having 3 live neighbors', () => {
+      const currentGen = Doubles.generationBuilder(SIZE)
+        .addLiveCell(0, 0)
+        .addLiveCell(0, 1)
+        .addLiveCell(1, 0)
+        .build();
+
+      const expected = Doubles.generationBuilder(SIZE)
+        .addLiveCell(0, 0)
+        .addLiveCell(0, 1)
+        .addLiveCell(1, 0)
+        .addLiveCell(1, 1)
+        .build();
+
+      expect(game.tick(currentGen)).toStrictEqual(expected);
     });
   });
 });

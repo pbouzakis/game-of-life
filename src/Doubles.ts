@@ -22,12 +22,16 @@ const Doubles: any = {
     location,
   }),
 
-  toDeadGeneration: (size: number) => range(size).map(() => range(size).map(() => false)),
+  toDeadGeneration: (size: number): Generation => (
+    range(size).map(() => range(size).map(() => ({
+      isAlive: false,
+    })))
+  ),
 
   generationBuilder: (size: number, gen: Generation = Doubles.toDeadGeneration(size)) => ({
     addLiveCell: (x: number, y: number) => (
       Doubles.generationBuilder(size, gen.map((row, i) => (
-        row.map((isAlive, j) => i === x && j === y ? true : isAlive)
+        row.map(({ isAlive }, j) => i === x && j === y ? { isAlive: true } : { isAlive })
       )))
     ),
     build: () => gen,

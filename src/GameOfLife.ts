@@ -14,10 +14,18 @@ export type Neighbor =
 
 export type CellLocation = [number, number]; // [x, y]
 
-const toCellLocation = (x: number, y: number) => [x, y];
+const toCellLocation = (x: number, y: number): CellLocation => [x, y];
 
 const toGameOfLife = (size: number) => ({
   seed: () => seed(size),
+  tick: (gen: Generation) => (
+    gen.map((row, x) => row.map((cell, y) => (
+      transition({
+        isAlive: cell.isAlive,
+        liveNeighbors: getLiveNeighborsFrom(toCellLocation(x, y), gen),
+      })
+    )))
+  ),
 });
 
 const seed = (size: number): Generation => (
@@ -71,7 +79,7 @@ const getLiveNeighborsFrom = ([x, y]: CellLocation, gen: Generation) => {
 
 const getNeighbor = ([x, y]: CellLocation, gen: Generation): Neighbor => ({
   location: [x, y],
-  isAlive: Boolean(gen[x] && gen[x][y]),
+  isAlive: Boolean(Array.isArray(gen[x]) && gen[x][y] && gen[x][y].isAlive),
 });
 
 export {
