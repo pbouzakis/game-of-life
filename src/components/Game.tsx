@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import Board from './Board';
-import {toInput} from '../input';
+import GameFactory from '../factory';
 
 const TICK_DELAY = 1000;
 
 const Game: React.SFC = () => {
-  const [bitmap, setBitMap] = useState(toInput());
+  const game = GameFactory.create();
+  const [bitmap, setBitMap] = useState(game.seed());
 
   const update = () => {
-    setTimeout(() => setBitMap(toInput()), TICK_DELAY);
+    setTimeout(() => setBitMap(game.tick()), TICK_DELAY);
   };
 
   useEffect(update);
