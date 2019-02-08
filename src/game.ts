@@ -12,6 +12,8 @@ export type Neighbor =
 
 export type CellLocation = [number, number]; // [x, y]
 
+const toCellLocation = (x: number, y: number) => [x, y];
+
 const transition = (cell: CellEnvironment): Cell => ({
   isAlive: willLiveOnToNextGeneration(cell),
 });
@@ -61,5 +63,6 @@ const getNeighbor = ([x, y]: CellLocation, gen: Generation): Neighbor => ({
 
 export {
   getLiveNeighborsFrom,
+  toCellLocation,
   transition,
 };

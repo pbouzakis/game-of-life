@@ -1,40 +1,10 @@
-import range from './range';
+import Doubles from './Doubles';
 import {
-  CellEnvironment,
-  CellLocation,
   Generation,
-  Neighbor,
+  toCellLocation,
   transition,
   getLiveNeighborsFrom,
 } from './game';
-
-const Doubles: any = {
-  toLiveCell: (liveNeighbors: Neighbor[] = []): CellEnvironment => ({
-    isAlive: true,
-    liveNeighbors,
-  }),
-
-  toDeadCell: (liveNeighbors: Neighbor[] = []): CellEnvironment => ({
-    isAlive: false,
-    liveNeighbors,
-  }),
-
-  toLiveNeighbor: (location: CellLocation = [0, 0]) => ({
-    isAlive: true,
-    location,
-  }),
-
-  toDeadGeneration: (size: number) => range(size).map(() => range(size).map(() => false)),
-
-  generationBuilder: (size: number, gen: Generation = Doubles.toDeadGeneration(size)) => ({
-    addLiveCell: (x: number, y: number) => (
-      Doubles.generationBuilder(size, gen.map((row, i) => (
-        row.map((isAlive, j) => i === x && j === y ? true : isAlive)
-      )))
-    ),
-    build: () => gen,
-  }),
-};
 
 describe('On each next tick', () => {
 // Any live cell with fewer than two live liveNeighbors dies, as if by underpopulation
@@ -160,25 +130,25 @@ describe('Within generation', () => {
     });
 
     it('finds all live liveNeighbors from center', () => {
-      const centerCell: CellLocation = [1, 1];
+      const centerCell = toCellLocation(1, 1);
       const neighbors = getLiveNeighborsFrom(centerCell, gen);
 
       expect(neighbors.map(neighbor => neighbor.location)).toEqual([
-        [0, 0],
-        [0, 1],
-        [1, 0],
-        [1, 2],
-        [2, 1],
+        toCellLocation(0, 0),
+        toCellLocation(0, 1),
+        toCellLocation(1, 0),
+        toCellLocation(1, 2),
+        toCellLocation(2, 1),
       ]);
     });
 
     it('finds all live liveNeighbors from top left', () => {
-      const topLeft: CellLocation = [0, 0];
+      const topLeft = toCellLocation(0, 0);
       const neighbors = getLiveNeighborsFrom(topLeft, gen);
 
       expect(neighbors.map(neighbor => neighbor.location)).toEqual([
-        [0, 1],
-        [1, 0],
+        toCellLocation(0, 1),
+        toCellLocation(1, 0),
       ]);
     });
   });
