@@ -6,13 +6,13 @@ const range = (size: number) => (
 
 const toInput = () => (
   range(size)
-    .map(i => range(size).map(j => toRandom()))
+    .map(i => range(size).map(j => toRandomBits()))
 );
 
 const DENSITY = .4;
 
-const toRandom = () => (
-  Math.round(Math.random() - DENSITY)
+const toRandomBits = () => (
+  Boolean(Math.round(Math.random() - DENSITY))
 );
 
 export {
