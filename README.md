@@ -2,9 +2,6 @@
 Hobby project for [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 The game is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. One interacts with the Game of Life by creating an initial configuration and observing how it evolves, or, for advanced players, by creating patterns with particular properties.
 
-## Tech details
-The project was scaffolding using [Create React App](https://facebook.github.io/create-react-app/) w/ TypeScript enabled.
-
 ## Rules
 _Taken from wikipedia_.
 
@@ -17,4 +14,8 @@ The universe of the Game of Life is an infinite, two-dimensional orthogonal grid
 
 The initial pattern constitutes the seed of the system. The first generation is created by applying the above rules simultaneously to every cell in the seed; births and deaths occur simultaneously, and the discrete moment at which this happens is sometimes called a tick. Each generation is a pure function of the preceding one. The rules continue to be applied repeatedly to create further generations.
 
+## Tech details
+* The project was created using [Create React App](https://facebook.github.io/create-react-app/) w/ TypeScript enabled.
+* Uses React Hooks! (My first project using them)
+* Game rules written via TDD (See progress by going thru commit history).
 
