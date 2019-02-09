@@ -1,4 +1,7 @@
-# game of life ![Travis Build Status](https://travis-ci.com/pbouzakis/game-of-life.svg?branch=master)
+# game of life
+![Netlify Status](https://api.netlify.com/api/v1/badges/2d204dbc-b715-4678-bae9-c12383c6cc03/deploy-status)
+![Travis Build Status](https://travis-ci.com/pbouzakis/game-of-life.svg?branch=master)
+
 Hobby project for [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 The game is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. One interacts with the Game of Life by creating an initial configuration and observing how it evolves, or, for advanced players, by creating patterns with particular properties.
 
