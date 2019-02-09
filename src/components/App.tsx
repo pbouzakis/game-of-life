@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import logo from './game-of-life-logo.png';
 import './App.css';
 import Game from './Game';
