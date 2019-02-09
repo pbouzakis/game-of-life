@@ -6,7 +6,7 @@ const randomGame = {
   tick: toInput,
 };
 
-const create = () => GameOfLife.create(50);
+const create = (size: number) => GameOfLife.create(size);
 
 export default {
   create,

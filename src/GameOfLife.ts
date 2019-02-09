@@ -16,7 +16,7 @@ export type CellLocation = [number, number]; // [x, y]
 
 const toCellLocation = (x: number, y: number): CellLocation => [x, y];
 
-const DEFAULT_DENSITY = .05;
+const DEFAULT_DENSITY = .15;
 
 const toGameOfLife = (size: number) => ({
   seed: (density: number = DEFAULT_DENSITY) => seed(size, density),
