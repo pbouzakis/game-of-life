@@ -1,8 +1,10 @@
 import React from 'react';
+import Button from '@material-ui/core/Button';
 
 const Start: React.SFC = () => (
   <section>
-    Welcome to Game Of Life
+    <p>Welcome to the Game Of Life</p>
+    <Button href="/game" color="primary" variant="contained">Start!</Button>
   </section>
 );
 
