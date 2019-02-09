@@ -5,7 +5,7 @@ import GameFactory from '../factory';
 import GenerationStore from './GenerationStore';
 import './Game.css';
 
-const TICK_DELAY = 1000;
+const TICK_DELAY = 100;
 const GENERATION_SIZE = 150;
 
 const Game: React.SFC = () => {
