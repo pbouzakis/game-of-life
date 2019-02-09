@@ -16,8 +16,10 @@ export type CellLocation = [number, number]; // [x, y]
 
 const toCellLocation = (x: number, y: number): CellLocation => [x, y];
 
+const DEFAULT_DENSITY = .05;
+
 const toGameOfLife = (size: number) => ({
-  seed: () => seed(size),
+  seed: (density: number = DEFAULT_DENSITY) => seed(size, density),
   tick: (gen: Generation) => (
     gen.map((row, x) => row.map((cell, y) => (
       transition({
@@ -28,12 +30,14 @@ const toGameOfLife = (size: number) => ({
   ),
 });
 
-const seed = (size: number): Generation => (
+const seed = (size: number, density: number): Generation => (
   range(size)
-    .map(() => range(size).map(() => ({ isAlive: randomBoolean() })))
+    .map(() => range(size).map(() => ({ isAlive: randomBoolean(density) })))
 );
 
-const randomBoolean = () => Boolean(Math.round(Math.random()));
+const randomBoolean = (percent: number) => (
+  Math.random() <= percent
+);
 
 const transition = (cell: CellEnvironment): Cell => ({
   isAlive: willLiveOnToNextGeneration(cell),

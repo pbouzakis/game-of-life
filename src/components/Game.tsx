@@ -8,16 +8,31 @@ const TICK_DELAY = 1000;
 const Game: React.SFC = () => {
   const game = GameFactory.create();
   const [generation, setBitMap] = useState(game.seed());
+  let timeoutId: any;
 
   const update = () => {
-    setTimeout(() => {
+    timeoutId = setTimeout(() => {
       setBitMap(game.tick(generation));
     }, TICK_DELAY);
   };
 
   useEffect(update);
 
-  return <Board bitmap={toBitMapFrom(generation)} />;
+  const handleRestart = () => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    setBitMap(game.seed())
+  };
+
+  return (
+    <div>
+      <Board bitmap={toBitMapFrom(generation)} />
+      <section>
+        <button onClick={handleRestart}>Restart</button>
+      </section>
+    </div>
+  );
 };
 
 const toBitMapFrom = (generation: Generation) => (

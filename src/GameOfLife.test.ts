@@ -157,6 +157,7 @@ describe('Within generation', () => {
 describe('Game of Life', () => {
   const SIZE = 3;
   const game = GameOfLife.create(SIZE);
+  const deadGen = Doubles.generationBuilder(SIZE).build();
 
   describe('When creating the seed generation', () => {
     let seed: Generation;
@@ -187,9 +188,31 @@ describe('Game of Life', () => {
     });
   });
 
-  describe('On the next tick', () => {
-    const deadGen = Doubles.generationBuilder(SIZE).build();
+  describe('Adjusting creating the seed generation density', () => {
+    it('is dead seed when density set to 0', () => {
+      const seed = game.seed(0);
+      expect(seed).toStrictEqual(deadGen);
+    });
 
+    it('is all alive seed when density set to 1', () => {
+      const seed = game.seed(1);
+      const expected = Doubles.generationBuilder(SIZE)
+        .addLiveCell(0, 0)
+        .addLiveCell(0, 1)
+        .addLiveCell(0, 2)
+        .addLiveCell(1, 0)
+        .addLiveCell(1, 1)
+        .addLiveCell(1, 2)
+        .addLiveCell(2, 0)
+        .addLiveCell(2, 1)
+        .addLiveCell(2, 2)
+        .build();
+
+      expect(seed).toStrictEqual(expected);
+    });
+  });
+
+  describe('On the next tick', () => {
     it('has no effect on an all dead generation', () => {
       expect(game.tick(deadGen)).toEqual(deadGen);
     });
